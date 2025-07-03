@@ -1,0 +1,240 @@
+/* header.css */
+
+/* === MOBILE FIRST STYLES (DEFAULT) === */
+
+/* Container do Header Mobile */
+.mobile-header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100; /* Garante que o header fique acima do conteúdo */
+  background-color: #5A8DAA; /* Cor de fundo principal do cabeçalho */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: top 0.3s ease-in-out; /* Suaviza a transição de visibilidade */
+  border-bottom: 3px solid #F49F0A; /* Borda inferior (agora no container para o dropdown) */
+}
+
+/* Classes para controlar a visibilidade do header ao rolar */
+.mobile-header-container.hidden {
+  top: -80px; /* Esconde o header acima da tela (ajuste conforme a altura do seu header) */
+}
+
+.mobile-header-container.visible {
+  top: 0; /* Mantém o header visível no topo */
+}
+
+/* Barra de Navegação (dentro do header mobile) */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centraliza o título no mobile */
+  position: relative; 
+  padding: 20px 16px;
+  /* border-bottom: 3px solid #F49F0A;  -> Movido para .mobile-header-container */
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  position: absolute;
+  left: 16px;
+  cursor: pointer;
+  padding: 0;
+  display: flex; /* Visível no mobile */
+  align-items: center;
+}
+
+.nav-title {
+  font-family: 'Arial', sans-serif;
+  color: white;
+  font-weight: 700;
+  font-size: 28px;
+  user-select: none;
+  margin: 0;
+}
+
+.nav-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Menu Dropdown Mobile */
+.dropdownMenu {
+  position: absolute; 
+  top: 100%; /* Posiciona o menu abaixo da nav-bar, dentro do header-container */
+  left: 0;
+  right: 0;
+  background-color: #91AEC1;
+  padding: 2rem 1.5rem; 
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+  display: flex; /* Visível no mobile quando aberto */
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: slideDown 0.3s ease-out;
+  z-index: 90; /* Abaixo do header se necessário, mas acima do conteúdo */
+}
+
+.menuLink {
+  display: block;
+  background-color: #D1E3EC;
+  color: #3B525F;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 1rem 0;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.menuLink:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.user-info {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1rem; /* Espaço abaixo das informações do usuário */
+}
+
+.menu-divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 0.5rem 0;
+}
+
+.logout-button {
+  width: 100%;
+  color: #d9534f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.logout-button:hover {
+  background-color: #fbeeee;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === DESKTOP SIDEBAR STYLES === */
+
+/* Sidebar para Desktop (oculta por padrão no mobile) */
+.desktop-sidebar {
+  display: none; /* Oculta a sidebar no mobile */
+}
+
+/* Media Query para telas maiores (Desktop) */
+@media (min-width: 769px) {
+  /* Esconde o header mobile no desktop */
+  .mobile-header-container {
+    display: none;
+  }
+
+  /* Exibe e estiza a sidebar no desktop */
+  .desktop-sidebar {
+    display: flex;
+    flex-direction: column;
+    min-width: 15vw;
+    height: 100vh; /* Altura total da viewport */
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #5A8DAA; /* Cor de fundo da sidebar */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra para destacar */
+    padding: 20px;
+    border-right: 3px solid #F49F0A; /* Borda direita */
+    z-index: 99; /* Garante que a sidebar esteja acima do conteúdo principal */
+  }
+
+  .sidebar-title-link {
+    text-decoration: none;
+    color: inherit;
+    display: block; /* Para que o link ocupe a largura total */
+    text-align: center;
+  }
+
+  .sidebar-title {
+    font-family: 'Arial', sans-serif;
+    color: white;
+    font-weight: 700;
+    font-size: 32px; /* Título maior na sidebar */
+    margin: 0;
+    padding-bottom: 10px; /* Espaço para a borda */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* Linha divisória abaixo do título */
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Permite que a navegação ocupe espaço restante */
+  }
+
+  .sidebar-user-info {
+    padding: 30px 0;
+    text-align: center;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .sidebar-link {
+    display: block;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 0.8rem 1rem;
+    border-radius: 8px; /* Borda arredondada para links */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  }
+
+  .sidebar-link:hover {
+    background-color: #91AEC1; /* Cor de fundo ao passar o mouse */
+    color: #F49F0A; /* Cor do texto ao passar o mouse */
+  }
+
+  .sidebar-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.3); 
+  }
+
+  .sidebar-logout-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    width: 100%; /* Ocupa a largura total */
+    justify-content: center; /* Centraliza conteúdo do botão */
+  }
+
+  .sidebar-logout-button:hover {
+    background-color: #d9534f; /* Cor de fundo ao passar o mouse */
+    color: white; /* Cor do texto ao passar o mouse */
+  }
+}
