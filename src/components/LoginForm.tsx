@@ -5,11 +5,16 @@ import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import '@/styles/login.css';
 
+type LoginFormData = {
+  email: string;
+  senha: string;
+};
+
 export default function LoginForm() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<LoginFormData>(); 
   const { login } = useAuth();
 
-  const handleLogin = async (data: any) => {
+  const handleLogin = async (data: LoginFormData) => {
     await login(data);
   };
 

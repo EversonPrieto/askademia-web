@@ -9,13 +9,12 @@ import '../styles/header.css';
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-  const [isVisible, setIsVisible] = useState(true); // Para o header mobile
+  const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0); 
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      // Lógica de visibilidade apenas para o header mobile
       if (currentScrollY <= 60) {
         setIsVisible(true);
       } 
@@ -36,14 +35,13 @@ export default function Header() {
   }, []); 
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const handleLinkClick = () => setIsMenuOpen(false); // Fecha o menu mobile ao clicar em um link
+  const handleLinkClick = () => setIsMenuOpen(false); 
 
   const handleLogout = () => {
-    handleLinkClick(); // Fecha o menu mobile (se aberto)
+    handleLinkClick(); 
     logout();
   };
 
-  // Define os itens do menu para ambos mobile e desktop
   const navItems = user
     ? [{ label: 'Home', path: '/' }]
     : [
@@ -54,10 +52,6 @@ export default function Header() {
 
   return (
     <>
-      {/* 
-        Header para Mobile (será escondido no desktop via CSS) 
-        A lógica de 'isVisible' se aplica a este elemento.
-      */}
       <header className={`mobile-header-container ${isVisible ? 'visible' : 'hidden'}`}>
         <nav className="nav-bar">
           <button onClick={toggleMenu} className="menuButton" aria-label="Abrir ou fechar menu">
@@ -95,10 +89,6 @@ export default function Header() {
         )}
       </header>
 
-      {/* 
-        Sidebar para Desktop (será escondida no mobile via CSS)
-        Esta sidebar é sempre visível no desktop e não tem a lógica de 'isVisible'.
-      */}
       <aside className="desktop-sidebar">
         <Link href="/" className="sidebar-title-link">
           <h1 className="sidebar-title">Askademia</h1>

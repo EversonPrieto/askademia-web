@@ -6,3 +6,10 @@ export interface UsuarioI {
   email: string;
   tipo: TipoUsuario;
 }
+
+export interface CadastroFormData {
+  nome: string;
+  email: string;
+  senha: string;
+  confirmarSenha: string;
+}

@@ -1,38 +1,29 @@
 'use client';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form'; 
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import Link from 'next/link';
 import '../../styles/cadastro.css';
+import { CadastroFormData } from '@/utils/types/usuarios';
 
 export default function Cadastro() {
     const router = useRouter();
-
-    const [usuario, setUsuario] = useState({
-        nome: '',
-        email: '',
-        senha: '',
-        confirmarSenha: '',
-    });
-
     const [showPassword, setShowPassword] = useState(false);
+    
     const [erro, setErro] = useState<string | null>(null);
     const [sucesso, setSucesso] = useState<string | null>(null);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setUsuario((prev) => ({ ...prev, [name]: value }));
-        setErro(null); 
-        setSucesso(null);
-    };
+    const { register, handleSubmit, formState: { isSubmitting } } = useForm<CadastroFormData>();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleCadastro = async (data: CadastroFormData) => {
         setErro(null);
         setSucesso(null);
 
-        const { nome, email, senha, confirmarSenha } = usuario;
-
+        const { nome, email, senha, confirmarSenha } = data;
+        
         if (!nome || !email || !senha || !confirmarSenha) {
-            setErro("Preencha todos os campos.");
+            setErro("Por favor, preencha todos os campos.");
             return;
         }
 
@@ -48,20 +39,18 @@ export default function Cadastro() {
                 body: JSON.stringify({ nome, email, senha }),
             });
 
-            const dados = await response.json();
+            const responseData = await response.json();
 
             if (response.ok) {
-                setSucesso("Cadastro realizado com sucesso!");
-                setTimeout(() => router.push('/login'), 1500);
+                setSucesso("Cadastro realizado com sucesso! Redirecionando...");
+                toast.success("Cadastro bem-sucedido!");
+                setTimeout(() => router.push('/login'), 2000);
             } else {
-                if (dados.erro) {
-                    setErro(dados.erro);
-                } else {
-                    setErro("Erro ao cadastrar usuário.");
-                }
+                setErro(responseData.erro || "Erro ao cadastrar usuário.");
             }
         } catch (error) {
-            setErro("Erro de conexão com a API.");
+            console.error("Erro de conexão com a API:", error);
+            setErro("Erro de conexão. Tente novamente mais tarde.");
         }
     };
 
@@ -73,17 +62,14 @@ export default function Cadastro() {
                 {erro && <div className="mensagem erro">{erro}</div>}
                 {sucesso && <div className="mensagem sucesso">{sucesso}</div>}
 
-                <form onSubmit={handleSubmit} noValidate>
+                <form onSubmit={handleSubmit(handleCadastro)} noValidate>
                     <label>
                         <i className="fas fa-user" aria-hidden="true"></i>
                         <input
                             type="text"
-                            name="nome"
                             placeholder="Nome completo"
-                            value={usuario.nome}
-                            onChange={handleChange}
                             required
-                            aria-label="Digite seu nome"
+                            {...register("nome")}
                         />
                     </label>
 
@@ -91,12 +77,9 @@ export default function Cadastro() {
                         <i className="far fa-envelope" aria-hidden="true"></i>
                         <input
                             type="email"
-                            name="email"
                             placeholder="Digite seu email"
-                            value={usuario.email}
-                            onChange={handleChange}
                             required
-                            aria-label="Digite seu email"
+                            {...register("email")}
                         />
                     </label>
 
@@ -104,19 +87,11 @@ export default function Cadastro() {
                         <i className="fas fa-lock" aria-hidden="true"></i>
                         <input
                             type={showPassword ? "text" : "password"}
-                            name="senha"
                             placeholder="Digite sua senha"
-                            value={usuario.senha}
-                            onChange={handleChange}
                             required
-                            aria-label="Digite sua senha"
+                            {...register("senha")}
                         />
-                        <button
-                            type="button"
-                            className="show-password"
-                            onClick={() => setShowPassword(!showPassword)}
-                            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                        >
+                        <button type="button" className="show-password" onClick={() => setShowPassword(!showPassword)}>
                             <i className={showPassword ? "far fa-eye-slash" : "far fa-eye"}></i>
                         </button>
                     </label>
@@ -125,21 +100,20 @@ export default function Cadastro() {
                         <i className="fas fa-lock" aria-hidden="true"></i>
                         <input
                             type={showPassword ? "text" : "password"}
-                            name="confirmarSenha"
                             placeholder="Confirme sua senha"
-                            value={usuario.confirmarSenha}
-                            onChange={handleChange}
                             required
-                            aria-label="Confirme sua senha"
+                            {...register("confirmarSenha")}
                         />
                     </label>
 
-                    <button type="submit" className="submit">Cadastrar</button>
+                    <button type="submit" className="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "Cadastrando..." : "Cadastrar"}
+                    </button>
                 </form>
 
                 <p className="sign-in">
                     Já tem uma conta?
-                    <a href="/login"> Entrar</a>
+                    <Link href="/login"> Entrar</Link>
                 </p>
             </main>
         </section>

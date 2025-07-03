@@ -4,12 +4,17 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { toast } from 'sonner';
-import { UsuarioI } from '@/utils/types/usuarios';
+import { UsuarioI, TipoUsuario } from '@/utils/types/usuarios';
+
+type LoginData = {
+  email: string;
+  senha: string;
+};
 
 interface AuthContextType {
   user: UsuarioI | null;
   isLoading: boolean;
-  login: (data: any) => Promise<void>;
+  login: (data: LoginData) => Promise<void>; 
   logout: () => void;
 }
 
@@ -24,14 +29,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const userName = Cookies.get('usuario_logado_nome');
     const userId = Cookies.get('usuario_logado_id');
     const userEmail = Cookies.get('usuario_logado_email');
+    const userTipo = Cookies.get('usuario_logado_tipo') as TipoUsuario;
 
-    if (userName && userId && userEmail) {
-      setUser({ id: Number(userId), nome: userName, email: userEmail, tipo: 'ALUNO' });
+    if (userName && userId && userEmail && userTipo) {
+      setUser({ id: Number(userId), nome: userName, email: userEmail, tipo: userTipo });
     }
     setIsLoading(false);
   }, []);
 
-  const login = async (data: any) => {
+  const login = async (data: LoginData) => { 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuarios/login`, {
         method: 'POST',
@@ -45,21 +51,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         Cookies.set('usuario_logado_id', responseData.id, { expires: 1 });
         Cookies.set('usuario_logado_nome', responseData.nome, { expires: 1 });
         Cookies.set('usuario_logado_email', responseData.email, { expires: 1 });
+        Cookies.set('usuario_logado_tipo', responseData.tipo, { expires: 1 }); 
         
         setUser(responseData);
         
         toast.success(`Bem-vindo de volta, ${responseData.nome}!`);
-        router.push('/'); 
+        router.push('/');
       } else {
         toast.error(responseData.erro || 'Email ou senha incorretos.');
       }
     } catch (error) {
+      console.error("Falha na requisição de login:", error);
       toast.error('Não foi possível conectar ao servidor.');
     }
   };
 
   const logout = () => {
-    // Remove os cookies
+
     Cookies.remove('usuario_logado_id');
     Cookies.remove('usuario_logado_nome');
     Cookies.remove('usuario_logado_email');

@@ -1,5 +1,3 @@
-// Arquivo: src/app/layout.tsx
-
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import { AuthProvider } from "@/contexts/AuthContext";

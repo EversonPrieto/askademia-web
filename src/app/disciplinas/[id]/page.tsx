@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -161,8 +161,9 @@ export default function ForumPorDisciplinaPage() {
   const [error, setError] = useState<string | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  const fetchForumData = async () => {
+  const fetchForumData = useCallback(async () => {
     if (!disciplinaId) return;
+    
     setIsLoading(true);
     setError(null);
     try {
@@ -172,7 +173,7 @@ export default function ForumPorDisciplinaPage() {
       ]);
 
       if (!disciplinaRes.ok || !perguntasRes.ok) {
-        throw new Error('Não foi possível carregar os dados do fórum. A disciplina pode não existir.');
+        throw new Error('Não foi possível carregar os dados do fórum.');
       }
       
       const disciplinaData = await disciplinaRes.json();
@@ -187,13 +188,11 @@ export default function ForumPorDisciplinaPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [disciplinaId]); 
 
   useEffect(() => {
-    if (disciplinaId > 0) {
-      fetchForumData();
-    }
-  }, [disciplinaId]);
+    fetchForumData();
+  }, [fetchForumData]);
 
   const renderContent = () => {
     if (isLoading) return <p>Carregando fórum...</p>;
