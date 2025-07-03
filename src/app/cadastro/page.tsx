@@ -42,7 +42,7 @@ export default function Cadastro() {
         }
 
         try {
-            const response = await fetch('http://localhost:3004/usuarios', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuarios`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nome, email, senha }),
